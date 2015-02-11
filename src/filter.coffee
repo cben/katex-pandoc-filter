@@ -1,17 +1,21 @@
-mjAPI = require("MathJax-node/lib/mj-single.js")
+# Pandoc json->json filter.
+# Assumes katex.css was loaded in html, e.g. by `-H head.html`.
+
+katex = require('katex')
 Promise = require('promise')
 
-tex2svg = (mn,inline) ->
+# TODO: could get rid of promises - unlike MathJax, KaTeX is synchronous.
+
+tex2html = (tex, inline) ->
   new Promise (resolve) ->
-    mjAPI.typeset
-      math: mn
-      format: if inline then "inline-TeX" else "TeX",
-      svg:true
-      speakText: false
-      linebreaks: false
-    , (data) ->
-      if (!data.errors)
-        resolve(data)
+    if not inline
+      tex = '\\displaystyle {' + tex + '}'
+    try
+      html = katex.renderToString(tex)
+      resolve(html)
+    catch error
+      console.error('katex-pandoc-filter:', tex, ' -> ', error.toString())
+      resolve('[Math error: ' + error + ']')
 
 walkChildren = (children) ->
   Promise.all children.map (childnode) ->
@@ -21,9 +25,9 @@ walkTree = (node) ->
   if node.t=="Math"
     inline=node.c[0].t!='DisplayMath'
     tex=node.c[1]
-    tex2svg(tex,inline).then (svg) ->
+    tex2html(tex, inline).then (html) ->
       t:"RawInline"
-      c:["html",svg.svg]
+      c:["html",html]
   else
     if node.c? and typeof node.c is 'object'
       walkChildren(node.c).then (c) ->
@@ -31,8 +35,6 @@ walkTree = (node) ->
         c: c
     else
       Promise.resolve(node)
-
-mjAPI.start()
 
 process.stdin.setEncoding('utf8')
 jsondata = ""

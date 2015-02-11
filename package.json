@@ -1,14 +1,14 @@
 {
-  "name": "mathjax-pandoc-filter",
+  "name": "katex-pandoc-filter",
   "version": "0.1.0",
-  "description": "Pandoc filter to turn LaTeX math into embedded SVG",
+  "description": "Pandoc filter to turn math into HTML+CSS+webfont using KaTeX",
   "main": "./lib/filter",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/lierdakil/mathjax-pandoc-filter"
+    "url": "https://github.com/cben/katex-pandoc-filter"
   },
   "keywords": [
     "pandoc",
@@ -18,19 +18,22 @@
     "markdown",
     "html"
   ],
-  "author": "Nikolay Yakimov",
+  "author": "Beni Paskin-Cherniavsky <beni.cherniavsky@gmail.com>",
+  "contributors": [
+    "Nikolay Yakimov"
+  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lierdakil/mathjax-pandoc-filter/issues"
+    "url": "https://github.com/cben/katex-pandoc-filter/issues"
   },
-  "homepage": "https://github.com/lierdakil/mathjax-pandoc-filter",
+  "homepage": "https://github.com/cben/katex-pandoc-filter",
   "dependencies": {
-      "MathJax-node":"https://github.com/mathjax/MathJax-node/tarball/master",
+      "katex": "latest",
       "promise": "latest",
       "coffee-script": "latest"
   },
   "bin": {
-      "mathjax-pandoc-filter": "filter-shim.js"
+      "katex-pandoc-filter": "filter-shim.js"
   },
   "scripts": {
       "postinstall":"coffee -bco lib/ src/"
